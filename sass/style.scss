@@ -1,0 +1,148 @@
+$color-header-footer: #666666;
+$color-orange-detail: #ea8426;
+$color-background-body: #f1eee9;
+$color-navigation: #ffffff;
+$color-text: #4c4944;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+body{
+    font-size: 2rem;
+    color: $color-text;
+    background-color: $color-background-body;
+}
+
+.container {
+    width:100%;
+    max-width: 100rem;
+    margin: 0 auto;
+}
+
+.header {
+    background-color: $color-header-footer;
+    padding: 3rem 0;
+    width: 100;
+
+    &-wrapper{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &-logo {
+
+    }
+
+    &-search {
+        align-self: center;
+        display: flex;
+        &-input {
+            width: 70%;
+            height:100%;
+            font-size: 2rem;
+            padding: 0.5rem;
+            
+            
+        }
+    
+        &-btn {
+            background-color: $color-orange-detail;
+            border: none;
+            width: 20%;
+            height: 100%;
+            font-size: 2rem;
+            padding: 0.7rem 0;
+        }
+    }
+
+
+}
+
+////NAVIGATION
+.navigation{
+    background-color: $color-navigation;
+    padding: 2rem;
+    font-size: 2.4rem;
+
+    &-link{
+        &:link, 
+        &:visited{
+            color: $color-text;
+            text-decoration: none;
+            margin-right: 4rem;
+        }
+        
+        &:hover, 
+        &:active {
+          color: $color-orange-detail;  
+        }
+    
+    }
+   
+}
+
+////HOME
+.home-container {
+    display: none;
+}
+.section-heading {
+    border-bottom: 1.5px solid $color-orange-detail;
+    margin-top: 5rem;
+    margin-bottom: 4rem;
+}
+
+
+.item-wrapper{
+    display: flex;
+    gap: 3rem;
+}
+.item {
+
+    &-img{
+        width: 100%
+    }
+    &-heading {
+        
+    }
+    &-price-chart {
+        display: flex;
+        justify-content: space-between;
+    }
+    &-price {
+
+    }
+    &-chart {
+
+    }
+}
+////BOOKS
+.books-container{
+    display: flex;
+    gap: 5rem;
+}
+.categories{
+    
+    &-heading{
+        border-bottom: 2.5px solid $color-text;
+        margin-top: 5rem;
+        margin-bottom: 4rem;
+    }
+    
+    &-list{
+        list-style: none;
+        height: 100vh;
+        overflow-y: scroll;
+        width: 100%;
+
+        &-item{
+            padding: 1rem 0;
+        }
+    }
+}
