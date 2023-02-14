@@ -3,6 +3,7 @@ $color-orange-detail: #ea8426;
 $color-background-body: #f1eee9;
 $color-navigation: #ffffff;
 $color-text: #4c4944;
+$color-book-cards: #ffffff;
 
 * {
     margin: 0;
@@ -57,8 +58,13 @@ body{
             border: none;
             width: 20%;
             height: 100%;
-            font-size: 2rem;
-            padding: 0.7rem 0;
+
+            padding: 0.5rem 0;
+            cursor: pointer;
+
+            &-img{
+                width:2.5rem
+            }
         }
     }
 
@@ -90,6 +96,7 @@ body{
 
 ////HOME
 .home-container {
+    padding-bottom: 10rem;
     display: none;
 }
 .section-heading {
@@ -101,33 +108,41 @@ body{
 
 .item-wrapper{
     display: flex;
-    gap: 3rem;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    
 }
 .item {
+    width: 23rem;
+    background-color: $color-book-cards;
+    cursor: pointer;
 
     &-img{
-        width: 100%
+        width: 23rem;
+        aspect-ratio: 6 / 9;
     }
     &-heading {
         
     }
-    &-price-chart {
+
+    &-rating-reviews {
         display: flex;
         justify-content: space-between;
     }
-    &-price {
+
+    &-rating {
 
     }
+
     &-chart {
 
     }
 }
+
+
 ////BOOKS
-.books-container{
-    display: flex;
-    gap: 5rem;
-}
 .categories{
+    width: 20rem;
     
     &-heading{
         border-bottom: 2.5px solid $color-text;
@@ -140,9 +155,82 @@ body{
         height: 100vh;
         overflow-y: scroll;
         width: 100%;
-
+        
         &-item{
             padding: 1rem 0;
+            cursor: pointer;
         }
     }
+}
+
+.books-container{
+    display: flex;
+    gap: 5rem;
+    display: none;
+
+    .all-books {
+        width: 80rem;
+    }
+
+    .all-books-item{
+        width: 17.1rem;
+    }
+    
+    .all-books-img{
+        width: 17.1rem;
+    }
+}
+
+//Book
+.book-container {
+    display: none;
+}
+
+.book-info-wrapper{
+    padding: 4rem 0;
+    display: flex;
+    gap: 5rem;
+
+
+    .book-info {
+        width: 100%;
+    &-img {
+        width: 30rem;
+        aspect-ratio: 6 / 9;
+        
+    }
+    &-title {
+        display: block;
+        padding-top: 2rem;
+        margin-bottom: 3rem;
+        border-bottom: 1px solid $color-text;
+        font-size: 3.6rem;
+
+    }
+    &-item {
+        padding-bottom: 1.5rem;   
+ 
+    }
+}
+}
+
+.book-description {
+    &-heading{
+        margin-bottom: 2.4rem;
+        font-size: 2.6rem;
+        border-bottom: 1px solid $color-text;
+        font-weight: 600;
+        
+    }
+    
+    &-text {
+        margin-bottom: 4rem;
+        line-height: 1.5;
+        
+    }
+}
+
+.footer {
+    height: 10rem;
+    background-color: $color-header-footer;
 }

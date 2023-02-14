@@ -44,8 +44,11 @@ body {
   border: none;
   width: 20%;
   height: 100%;
-  font-size: 2rem;
-  padding: 0.7rem 0;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+.header-search-btn-img {
+  width: 2.5rem;
 }
 
 .navigation {
@@ -63,6 +66,7 @@ body {
 }
 
 .home-container {
+  padding-bottom: 10rem;
   display: none;
 }
 
@@ -74,21 +78,26 @@ body {
 
 .item-wrapper {
   display: flex;
-  gap: 3rem;
+  flex-wrap: wrap;
+  gap: 2.5rem;
 }
 
-.item-img {
-  width: 100%;
+.item {
+  width: 23rem;
+  background-color: #ffffff;
+  cursor: pointer;
 }
-.item-price-chart {
+.item-img {
+  width: 23rem;
+  aspect-ratio: 6/9;
+}
+.item-rating-reviews {
   display: flex;
   justify-content: space-between;
 }
-.books-container {
-  display: flex;
-  gap: 5rem;
+.categories {
+  width: 20rem;
 }
-
 .categories-heading {
   border-bottom: 2.5px solid #4c4944;
   margin-top: 5rem;
@@ -102,4 +111,63 @@ body {
 }
 .categories-list-item {
   padding: 1rem 0;
+  cursor: pointer;
+}
+
+.books-container {
+  display: flex;
+  gap: 5rem;
+  display: none;
+}
+.books-container .all-books {
+  width: 80rem;
+}
+.books-container .all-books-item {
+  width: 17.1rem;
+}
+.books-container .all-books-img {
+  width: 17.1rem;
+}
+
+.book-container {
+  display: none;
+}
+
+.book-info-wrapper {
+  padding: 4rem 0;
+  display: flex;
+  gap: 5rem;
+}
+.book-info-wrapper .book-info {
+  width: 100%;
+}
+.book-info-wrapper .book-info-img {
+  width: 30rem;
+  aspect-ratio: 6/9;
+}
+.book-info-wrapper .book-info-title {
+  display: block;
+  padding-top: 2rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #4c4944;
+  font-size: 3.6rem;
+}
+.book-info-wrapper .book-info-item {
+  padding-bottom: 1.5rem;
+}
+
+.book-description-heading {
+  margin-bottom: 2.4rem;
+  font-size: 2.6rem;
+  border-bottom: 1px solid #4c4944;
+  font-weight: 600;
+}
+.book-description-text {
+  margin-bottom: 4rem;
+  line-height: 1.5;
+}
+
+.footer {
+  height: 10rem;
+  background-color: #666666;
 }/*# sourceMappingURL=style.css.map */
