@@ -1,8 +1,10 @@
 'use strict';
-
 const homePage = document.querySelector('.home-container');
 const booksPage = document.querySelector('.books-container');
 const clickedBookPage = document.querySelector('.book-container');
+
+const imputedText = document.querySelector('.header-search-input');
+
 
 const genreContainer = document.querySelector('.categories-list');
 const genreListItems = document.querySelectorAll('.categories-list-item');
@@ -17,39 +19,50 @@ const booksNavigation = document.querySelector('.navigation-books');
 
 const randomGendreHeading = document.querySelector('.section-heading-gendre');
 
+const searchButton = document.querySelector('.header-search-btn')
+
+const red = "ff0000"
+const green = "008000"
+
 let genreArr = [];
 let uniqueGenreArr = [];
+let averageRating;
 
-//// navigation funtionality
-homeNavigation.addEventListener('click', function () {
-  homePage.style.display = 'block';
-  booksPage.style.display = 'none';
-});
 
-booksNavigation.addEventListener('click', function () {
-  homePage.style.display = 'none';
-  booksPage.style.display = 'flex';
-});
 
 //click on book functionality
-
 ////Get Books
 const getBooks = async function (books) {
   const response = await fetch(
-    'https://api.jsonbin.io/v3/b/63a0e753dfc68e59d56c71ec/latest',
-    {
-      method: 'GET',
-      headers: {
-        'X-Master-Key':
-          '$2b$10$viPOiL/.5Te1ctsEnmquLuBHKGeK09Vp0SxT2m7wkH68/e1537nUK',
-      },
-    }
+    './data/data.json'
+    // 'https://api.jsonbin.io/v3/b/63a0e753dfc68e59d56c71ec/latest',
+    // {
+    //   method: 'GET',
+    //   headers: {
+    //     'X-Master-Key':
+    //       '$2b$10$viPOiL/.5Te1ctsEnmquLuBHKGeK09Vp0SxT2m7wkH68/e1537nUK',
+    //   },
+    // }
   );
 
   const data = await response.json();
 
-  const bookData = data.record.results;
+  const bookData = data.results;
   console.log(bookData);
+
+  //// navigation funtionality
+  homeNavigation.addEventListener('click', function () {
+    homePage.style.display = 'flex';
+    booksPage.style.display = 'none';
+    clickedBookPage.style.display = 'none';
+  });
+  
+  booksNavigation.addEventListener('click', function () {
+    homePage.style.display = 'none';
+    booksPage.style.display = 'flex';
+    clickedBookPage.style.display = 'none';
+     displayBooks(bookData)
+  });
 
   ////HOME PAGE
   ////sort by rating
@@ -112,29 +125,59 @@ const getBooks = async function (books) {
       );
 
       displayBooks(booksClickedGenre);
-
-      clickedBookFunction(booksClickedGenre, allBooksContainer);
+      clickedBookFunction(booksClickedGenre, allBooksContainer, booksPage);
     });
   });
 
-  // dsplayGenresFunction();
   const allGenresList = document.querySelector('.categories-list-item-all');
-
   allGenresList.addEventListener('click', function () {
     displayBooks(bookData);
-
-    clickedBookFunction(bookData, allBooksContainer);
+    
+    clickedBookFunction(bookData, allBooksContainer, booksPage);
   });
 
   displayBooks(bookData);
-  console.log(clickedBookPage);
+  clickedBookFunction(bestRatingBooks, bestRatingContainer, homePage);
+  clickedBookFunction(mostReviewBooks, mostReviewContainer, homePage);
+  clickedBookFunction(bookData, allBooksContainer, booksPage);
 
-  clickedBookFunction(bestRatingBooks, bestRatingContainer);
-  clickedBookFunction(mostReviewBooks, mostReviewContainer);
-  clickedBookFunction(bookData, allBooksContainer);
+//////////////////////////proba
+ //search functionality
+ searchButton.addEventListener('click', function() {
+    homePage.style.display = "none"
+    booksPage.style.display = "flex"
+
+     if(imputedText.value) {
+        const searchTerm = imputedText.value.toLowerCase()
+        const filterBooks = bookData.filter(book => {
+        const bookTitle = book.title.toString().toLowerCase()
+          
+        return bookTitle.includes(searchTerm)      
+        })
+        console.log(filterBooks)
+            
+        if (filterBooks.length > 0) {
+            displayBooks(filterBooks)
+        } else {
+            booksPage.innerHTML = `<div class="wrong-input">
+        <p class="wrong-input-text">You have entered a title that does not exist!</p>
+        <p class="wrong-input-text">
+            Try again!</p>
+        </div>`;
+        console.log("wrong title")
+    }
+    }
+})
+    ////average rating
+    //get all rating and calculate average
+    const ratings = bookData.map(book => book.rating);
+    averageRating = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
+    console.log(averageRating)
 };
 
 getBooks();
+
+
 
 /////functions
 const displayBestRatingBooks = array => {
@@ -142,9 +185,11 @@ const displayBestRatingBooks = array => {
     // console.log(book)
     const html = `<div class="item">
         <img src="${book.img}" alt="" class="item-img"> 
+        <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
-        <div class="item-price-chart">
+        <div class="item-rating-reviews">
             <div class="item-rating">Rating: ${book.rating}</div>
+        </div>
         </div>
     </div>`;
     bestRatingContainer.insertAdjacentHTML('beforeend', html);
@@ -156,9 +201,11 @@ const displayMostReviewBooks = array => {
     // console.log(book)
     const html = `<div class="item">
        <img src="${book.img}" alt="" class="item-img"> 
+       <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
-       <div class="item-price-chart">
-           <div class="item-rewiews"> Reviews: ${book.reviews}</div>
+        <div class="item-rating-reviews">
+        <div class="item-reviews"> Reviews: ${book.reviews}</div>
+        </div>
         </div>
     </div>`;
     mostReviewContainer.insertAdjacentHTML('beforeend', html);
@@ -170,25 +217,33 @@ const displayBooks = array => {
   array.forEach(book => {
     const html = `<div class="item all-books-item">
         <img src="${book.img}" alt="" class="item-img all-books-img"> 
+        <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
         <div class="item-rating-reviews">
             <div class="item-rating">Rating: ${book.rating}</div>
-            <div class="item-rewiews">Reviews: ${book.reviews}</div>
+            <div class="item-reviews">Reviews: ${book.reviews}</div>
+        </div>
         </div>
     </div>`;
     allBooksContainer.insertAdjacentHTML('beforeend', html);
   });
 };
 
-const clickedBookFunction = (array, booksContainer) => {
+const clickedBookFunction = (array, booksContainer, page) => {
   const clickBooks = booksContainer.querySelectorAll('.item');
+//   const itemRating = clickedBookPage.querySelector('.book-info-span-rating');
+  
+  
+
   clickBooks.forEach((book, i) =>
     book.addEventListener('click', function () {
       clickedBookPage.innerHTML = '';
 
       clickedBookPage.style.display = 'block';
-      homePage.style.display = 'none';
-      booksPage.style.display = 'none';
+      page.style.display = 'none';
+    // booksPage.style.display = 'none'
+
+  
 
       const html = `<div class="book-info-wrapper">
             <img src="${array[i].img}" alt="" class="book-info-img">
@@ -204,9 +259,31 @@ const clickedBookFunction = (array, booksContainer) => {
             <div class="book-description">
                 <p class="book-description-heading">Description</p>
                 <p class="book-description-text">${array[i].desc}</p>
-            </div>`;
+            </div>
+            <button class="back-button"> Back &larr; </button>`;
 
       clickedBookPage.insertAdjacentHTML('beforeend', html);
+
+
+    //     const ratingElement = document.querySelector('.book-info-span-rating');
+    //     const ratingValue = ratingElement ? ratingElement.textContent : '';
+
+
+      if (array[i].rating > averageRating){
+        console.log(array[i].rating, "veci")
+        // console.log(itemRating)
+        // itemRating.style.backgroundColor = "green"
+       } else if (array[i].rating < averageRating){
+        console.log(array[i].rating, "manji")
+        // itemRating.style.backgroundColor = "red"
+       }
+
+    //Back btn functionality
+    const backButton = document.querySelector('.back-button ');
+    backButton.addEventListener('click', function(){
+        clickedBookPage.style.display = 'none';
+        page.style.display = 'flex';
+    })
     })
   );
 };
