@@ -245,6 +245,11 @@ body {
   background-color: #666666;
 }
 
+.wrong-input-text {
+  font-size: 3rem;
+  padding-bottom: 2rem;
+}
+
 .footer {
   height: 10rem;
   background-color: #666666;

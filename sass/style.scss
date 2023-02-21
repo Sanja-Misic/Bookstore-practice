@@ -324,9 +324,14 @@ body {
   :hover{
     background-color: $color-header-footer;
   }
-  
-
 }
+}
+
+.wrong-input {
+  &-text{
+    font-size: 3rem;
+    padding-bottom: 2rem ;  
+  }
 }
 
 .footer {
