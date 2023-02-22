@@ -174,13 +174,7 @@ const whenNoImgInApi = (book) => {
 
 homeNavigation.style.color = orangeNavigation
 
-
-
-
-
 ////Get Books
-
-const generalFunction = (booksArray) => {
 const getBooks = async function (books) {
   const response = await fetch(
     './data/data.json'
@@ -196,18 +190,43 @@ const getBooks = async function (books) {
   const data = await response.json();
   let bookData = data.results;
 
-  //get array all books and array less than 18 years old
+  //get array all books and array filtered books
   allBooksData = data.results
 
   //array genrs to exclude
-  const excludedGenres = ["æ¼«ç”»","14th Century","15th Century","16th Century","17th Century", "1864 Shenandoah Camping", "18th Century", "19th Century", "20th Century", "21st Century", "2nd Grade", "Adult", "Adult Fiction", "Category Romance", "Crime", "Erotic Horror", "Erotic Romance", "Erotica", "Gay Erotica", "Gay For You", "Gay Romance", "Horor", "Lesbian Fiction", "Lesbian Romance"];
+  const excludedGenres = ["Adult", "Adult Fiction", "African American Romance", "Category Romance",'Contemporary Romance', "Crime", "Erotic Horror", "Erotic Romance", "Erotica", "Gay Erotica", "Gay For You", "Gay Romance", "Horor", "Lesbian Fiction", "Lesbian Romance", 'M F M', 'M F Romance', 'M M Contemporary', 'M M F', 'M M Fantasy', 'M M Historical Romance', 'M M M', 'M M M M', 'M M Mystery', 'M M Paranormal', 'M M Romance', 'M M Science Fiction', 'M M Shapeshifters', 'M M Sports Romance', 'M M Supernatural', 'M M Young Adult', 'Manga Romance', 'Military Romance', 'New Adult', 'New Adult Romance', 'Romance','Sexuality','Sex Work','Strippers','Young Adult','Young Adult Contemporary','Young Adult Fantasy','Young Adult Historical Fiction','Young Adult Paranormal','Young Adult Romance','Young Adult Science Fiction'];
   filteredBooks = bookData.filter(book => !excludedGenres.some(genre => book.genre.includes(genre)));
 
+  //check box
+
+  const checkBoxFunction = () => {
+   imputedText.value = '';
+   genreContainer.innerHTML = ''
+   genreArr = [];
+   uniqueGenreArr = [];
+   if(checkBox.checked) {
+     bestRatingContainer.innerHTML = ''
+     mostReviewContainer.innerHTML = ''
+     // genreContainer.innerHTML = ''
+  
+     console.log("check-provera:", allBooksData)
+     generalFunction(allBooksData)
+    
+   } else {
+     bestRatingContainer.innerHTML = ''
+     mostReviewContainer.innerHTML = ''
+     // genreContainer.innerHTML = ''
+
+     console.log("notcheck-provera:", filteredBooks) 
+     generalFunction(filteredBooks)   
+   }
+  }
+  checkBox.addEventListener("click", checkBoxFunction)
   
   
 
 
-  
+  const generalFunction = (booksArray) => {
   //// navigation funtionality
   homeNavigation.addEventListener('click', function () {
     homePage.style.display = 'flex';
@@ -346,35 +365,13 @@ const getBooks = async function (books) {
 
     
 })
-    ////average rating
-    //get all rating and calculate average
-    const ratings = booksArray.map(book => book.rating);
-    averageRating = (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(2);
-    console.log(averageRating)
+  ////average rating
+  //get all rating and calculate average
+  const ratings = booksArray.map(book => book.rating);
+  averageRating = (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(2);
 };
-if(!checkBox.checked) {generalFunction(filteredBooks)}
+  if(!checkBox.checked) {generalFunction(filteredBooks)}
 }
+
 getBooks();
 
-//check box
-const checkBoxFunction = () => {
-  imputedText.value = '';
-  // genreContainer.innerHTML = ''
-  if(checkBox.checked) {
-    bestRatingContainer.innerHTML = ''
-    mostReviewContainer.innerHTML = ''
-    // genreContainer.innerHTML = ''
-  
-    console.log("check-provera:", allBooksData)
-    generalFunction(allBooksData)
-  
-  } else {
-    bestRatingContainer.innerHTML = ''
-    mostReviewContainer.innerHTML = ''
-    // genreContainer.innerHTML = ''
-
-    console.log("notcheck-provera:", filteredBooks) 
-    generalFunction(filteredBooks)   
-  }
-}
-checkBox.addEventListener("click", checkBoxFunction)
