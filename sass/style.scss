@@ -1,3 +1,4 @@
+//Colors
 $color-header-footer: #666666;
 $color-orange-detail: #ea8426;
 $color-background-body: #f1eee9;
@@ -6,8 +7,18 @@ $color-text: #4c4944;
 $color-text-white: #ffffff;
 $color-book-cards: #ffffff;
 
-$red: #ff0000;
-$red: #008000;
+$red: #b52121;
+$red: #225e0c;
+
+//Animations
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Početna vrijednost je 0 */
+  }
+  100% {
+    opacity: 1; /* Krajnja vrijednost je 1 */
+  }
+}
 
 
 * {
@@ -92,12 +103,12 @@ body {
 
     &:hover,
     &:active {
-      color: $color-orange-detail;
+      // color: $color-orange-detail;
     }
   }
 
+  //checkbox
   .check-wrapper{
-    
     position: absolute;
     top: 0;
     right: 0;
@@ -114,21 +125,38 @@ body {
       font-size: 1.8rem;
     }
 
-    .check-box-button{  
-      display: block;
-      background-color: #ea8426;
-      width: 3rem;
-      height: 3rem;
-      display: none;
-    }
-
     .check-box{
       
     }
 
-      
-    
+    input[type="checkbox"] {
+      appearance: none;
+      width: 3rem;
+      height: 3rem;
+      border: 1px solid $color-text;
+      margin: 0;
   }
+
+    input[type="checkbox"] {
+      display: grid;
+      place-content: center;
+  }
+
+  input[type="checkbox"]::before {
+    content: "";
+    width: 2.4rem;
+    height: 2.4rem;
+    transform: scale(0);
+    transition: 0.05s transform ease-in-out;
+    box-shadow: inset 3rem 3rem $color-orange-detail;
+  
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+  
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+}
 }
 
 ////HOME
@@ -152,14 +180,16 @@ body {
   width: 23rem;
   background-color: $color-book-cards;
   cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  padding: 0.5rem;
+  animation: fadeIn ease-in-out 0.5s;
 
   &-img {
-    width: 23rem;
+    width: 22rem;
     aspect-ratio: 6 / 9;
   }
 
   &-info-wrap{
-    // background-color: #ea8426;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -171,7 +201,11 @@ body {
     text-align: center;
     font-size: 1.6rem;
     height: 4rem;
-    overflow: hidden;
+    overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
   }
 
   &-rating-reviews {
@@ -182,21 +216,16 @@ body {
     letter-spacing: -0.1rem;
     font-weight: 600;
     border-top: 2px solid $color-background-body;
-    
-    
   }
 
   &-rating {
     border-right: 2px solid $color-background-body;
     padding-top: 1rem;
-    
- 
   }
 
   &-reviews {
     padding-top: 1rem;
     padding-left: 1rem;
-   
   }
 
 
@@ -212,6 +241,13 @@ body {
     margin-bottom: 4rem;
   }
 
+  &-list-item-all {
+    list-style: none;
+    padding: 1rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
   &-list {
     list-style: none;
     height: 100vh;
@@ -223,10 +259,6 @@ body {
       cursor: pointer;
     }
 
-    &-item-all{
-      padding: 1rem 0;
-      cursor: pointer;
-    }
   }
 }
 
@@ -251,20 +283,21 @@ body {
 
 //Book
 .book-container {
-  // display: none;
   position: relative;
+  animation: fadeIn ease-in-out 0.2s;
   
-  .book-info-wrapper {
+  .book-info-and-img {
   padding: 4rem 0;
   display: flex;
   gap: 5rem;
-  
+
+  .book-img {
+    width: 30rem;
+    aspect-ratio: 6 / 9;
+  }
+
   .book-info {
     width: 100%;
-    &-img {
-      width: 30rem;
-      aspect-ratio: 6 / 9;
-    }
     &-title {
       display: block;
       padding-top: 2rem;
@@ -272,16 +305,27 @@ body {
       border-bottom: 1px solid $color-text;
       font-size: 3.6rem;
     }
+
+    &-wrapper{
+      display: flex;
+      gap: 3rem;
+    }
     
-    &-item {
-      padding-bottom: 1.5rem;
+    &-item-1 {
+      padding: 1rem 0;
       text-transform: uppercase;
-      // height: 5rem;
-      // overflow-y: hidden;
+      height: 5rem;    
     }
 
-    &-span {
+    &-item-2 {
       text-transform: capitalize;
+      padding: 1rem 0;
+      height: 5rem;
+      overflow-y: scroll;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       &-rating{
         display: inline-block;
@@ -289,8 +333,7 @@ body {
         background-color: $color-orange-detail;
         color: $color-text-white;
         padding: 1rem 2rem;
-        width: 8.6rem;
-        
+        width: 8.6rem;       
       }
     }
   }
@@ -307,7 +350,6 @@ body {
   &-text {
     margin-bottom: 4rem;
     line-height: 1.5;
-
   }
 }
 

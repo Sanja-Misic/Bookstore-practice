@@ -6,6 +6,7 @@ const searchButton = document.querySelector('.header-search-btn')
 const homeNavigation = document.querySelector('.navigation-home');
 const booksNavigation = document.querySelector('.navigation-books');
 const checkBox = document.querySelector('#check-box');
+const checkBoxButton = document.querySelector('.check-box-button')
 
 const homePage = document.querySelector('.home-container');
 const booksPage = document.querySelector('.books-container');
@@ -20,8 +21,9 @@ const mostReviewContainer = document.querySelector('.most-revievs-item-wrapper')
 const randomGendreHeading = document.querySelector('.section-heading-gendre');
 const allBooksContainer = document.querySelector('.all-books-item-wrapper');
 
-const red = "ff0000"
-const green = "008000"
+const red = "#b52121"
+const green = "#225e0c"
+const orangeNavigation = "#ea8426"
 
 let genreArr = [];
 let uniqueGenreArr = [];
@@ -33,14 +35,16 @@ let backButton;
 let bookDataArray;
 let allBooksData;
 let filteredBooks
+let img;
 
 /////////////////////////
 ///// Functions
 const displayBestRatingBooks = array => {
   array.forEach(function (book) {
-    // console.log(book)
+    whenNoImgInApi(book)
+    
     const html = `<div class="item">
-        <img src="${book.img}" alt="" class="item-img"> 
+        <img src="${img}" alt="" class="item-img"> 
         <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
         <div class="item-rating-reviews">
@@ -54,9 +58,10 @@ const displayBestRatingBooks = array => {
 
 const displayMostReviewBooks = array => {
   array.forEach(function (book) {
-    // console.log(book)
+    whenNoImgInApi(book)
+
     const html = `<div class="item">
-       <img src="${book.img}" alt="" class="item-img"> 
+       <img src="${img}" alt="" class="item-img"> 
        <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
         <div class="item-rating-reviews">
@@ -75,9 +80,11 @@ const getAndDisplayGenre = (booksArray) => {
 
 const displayBooks = array => {
   allBooksContainer.innerHTML = '';
+
   array.forEach(book => {
+    whenNoImgInApi(book)
     const html = `<div class="item all-books-item">
-        <img src="${book.img}" alt="" class="item-img all-books-img"> 
+        <img src="${img}" alt="" class="item-img all-books-img"> 
         <div class="item-info-wrap">
         <div class="item-heading"> ${book.title}</div>
         <div class="item-rating-reviews">
@@ -99,31 +106,49 @@ const clickedBookFunction = (array, booksContainer, page) => {
       clickedBookPage.style.display = 'block';
       page.style.display = 'none';
 
-      const html = `<div class="book-info-wrapper">
-            <img src="${array[i].img}" alt="" class="book-info-img">
+      //when no img in API
+      if (array[i].img.length > 0) {
+        img = array[i].img
+      } else if (array[i].img === '') {
+        img = "book.png"
+      }
+
+      const html = `<div class="book-info-and-img">
+            <img src="${img}" class="book-img">
             <div class="book-info">
                 <h2 class="book-info-title">${array[i].title}</h2>
-                <p class="book-info-item">Author: <span class="book-info-span">${array[i].author}</span></p>
-                <p class="book-info-item">Format: <span class="book-info-span">${array[i].bookformat}</span></p>
-                <p class="book-info-item">Genre: <span class="book-info-span">${array[i].genre}</span></p>
-                <p class="book-info-item">Pages: <span class="book-info-span">${array[i].pages}</span></p>
-                <p class="book-info-item">Rating: <span class="book-info-span book-info-span-rating">${array[i].rating}</span></p>
+                <div class="book-info-wrapper">
+                    <div class="book-info-items-wrapper">
+                        <p class="book-info-item-1">Author:</p>
+                        <p class="book-info-item-1">Format:</p>
+                        <p class="book-info-item-1">Genre:</p>
+                        <p class="book-info-item-1">Pages:</p>
+                        <p class="book-info-item-1">Rating:</p></div>
+                    <div class="book-info-items-wrapper">
+                        <p class="book-info-item-2">${array[i].author}</p>
+                        <p class="book-info-item-2">${array[i].bookformat}</p>
+                        <p class="book-info-item-2">${array[i].genre}</p>
+                        <p class="book-info-item-2">${array[i].pages}</p>
+                        <p class="book-info-item-2 book-info-item-2-rating">${array[i].rating}</p>
+                    </div>
+                </div>     
             </div>
-            </div>
-            <div class="book-description">
-                <p class="book-description-heading">Description</p>
-                <p class="book-description-text">${array[i].desc}</p>
-            </div>
-            <button class="back-button"> Back &larr; </button>`;
+        </div>
+        <div class="book-description">
+            <p class="book-description-heading">Description</p>
+            <p class="book-description-text">${array[i].desc}</p>
+        </div>
+        <button class="back-button"> Back &larr; </button>`;
 
       clickedBookPage.insertAdjacentHTML('beforeend', html);
+      console.log(array)
      
       //Color element according to rating
-      ratingElement = document.querySelector('.book-info-span-rating')    
+      ratingElement = document.querySelector('.book-info-item-2-rating')    
       if (array[i].rating > averageRating){
-        ratingElement.style.backgroundColor = "green"
+        ratingElement.style.backgroundColor = green
        } else if (array[i].rating < averageRating){   
-        ratingElement.style.backgroundColor = "red"
+        ratingElement.style.backgroundColor = red
        } 
 
       //Back btn functionality
@@ -136,8 +161,26 @@ const clickedBookFunction = (array, booksContainer, page) => {
   );
 };
 
+//when no img in API
+const whenNoImgInApi = (book) => {
+    if (book.img === '') {
+      img = "book.png"
+    } else {
+      img = book.img
+    }
+}
+
 ////////////////////////////////////
+
+homeNavigation.style.color = orangeNavigation
+
+
+
+
+
 ////Get Books
+
+const generalFunction = (booksArray) => {
 const getBooks = async function (books) {
   const response = await fetch(
     './data/data.json'
@@ -155,46 +198,35 @@ const getBooks = async function (books) {
 
   //get array all books and array less than 18 years old
   allBooksData = data.results
-  // console.log(allBooksData);
 
   //array genrs to exclude
   const excludedGenres = ["æ¼«ç”»","14th Century","15th Century","16th Century","17th Century", "1864 Shenandoah Camping", "18th Century", "19th Century", "20th Century", "21st Century", "2nd Grade", "Adult", "Adult Fiction", "Category Romance", "Crime", "Erotic Horror", "Erotic Romance", "Erotica", "Gay Erotica", "Gay For You", "Gay Romance", "Horor", "Lesbian Fiction", "Lesbian Romance"];
   filteredBooks = bookData.filter(book => !excludedGenres.some(genre => book.genre.includes(genre)));
 
-  //check box
-  const checkBoxFunction = () => {
-    
-    if(checkBox.checked) {
-      bestRatingContainer.innerHTML = ''
-      mostReviewContainer.innerHTML = ''
-      // genreContainer.innerHTML = ''
-    
-      console.log("check-provera:", allBooksData)
-      generalFunction(allBooksData)
-    
-    } else {
-      bestRatingContainer.innerHTML = ''
-      mostReviewContainer.innerHTML = ''
-      // genreContainer.innerHTML = ''
   
-      console.log("notcheck-provera:", filteredBooks) 
-      generalFunction(filteredBooks)   
-    }
-  }
-  checkBox.addEventListener("click", checkBoxFunction)
+  
 
-  const generalFunction = (booksArray) => {
+
+  
   //// navigation funtionality
   homeNavigation.addEventListener('click', function () {
     homePage.style.display = 'flex';
     booksPage.style.display = 'none';
     clickedBookPage.style.display = 'none';
+    homeNavigation.style.color = orangeNavigation
+    booksNavigation.style.color = 'initial'
+
+    imputedText.value = '';
   });
   
   booksNavigation.addEventListener('click', function () {
     homePage.style.display = 'none';
     booksPage.style.display = 'flex';
     clickedBookPage.style.display = 'none';
+    booksNavigation.style.color = orangeNavigation
+    homeNavigation.style.color = 'initial'
+
+    imputedText.value = '';
      displayBooks(booksArray)
      clickedBookFunction(booksArray, allBooksContainer, booksPage);
   });
@@ -242,11 +274,13 @@ const getBooks = async function (books) {
   //display all genres and all books
   uniqueGenreArr = [...new Set(genreArr)];
   let probaArr = uniqueGenreArr.sort();
+  probaArr.splice(0,1);
   //
   // genreContainer.innerHTML = ''
   console.log(probaArr)
 
   probaArr.forEach(genre => {
+    // genreContainer.innerHTML = ''
     const html = `<li class="categories-list-item">${genre}</li>`;
     genreContainer.insertAdjacentHTML('beforeend', html);
   });
@@ -265,6 +299,7 @@ const getBooks = async function (books) {
 
       displayBooks(booksClickedGenre);
       clickedBookFunction(booksClickedGenre, allBooksContainer, booksPage);
+      imputedText.value = '';
     });
   });
 
@@ -292,6 +327,8 @@ const getBooks = async function (books) {
 
         if (filterBooks.length > 0) {
             displayBooks(filterBooks)
+            clickedBookFunction(filterBooks, allBooksContainer, booksPage);
+            
             // console.log(filterBooks)
         } else {
           allBooksContainer.innerHTML = `<div class="wrong-input">
@@ -306,6 +343,8 @@ const getBooks = async function (books) {
       <p class="wrong-input-text"> You have not entered any search text!</p>
       <p class="wrong-input-text"> Please enter what you want to search!</p> </div>`;
     }
+
+    
 })
     ////average rating
     //get all rating and calculate average
@@ -316,3 +355,26 @@ const getBooks = async function (books) {
 if(!checkBox.checked) {generalFunction(filteredBooks)}
 }
 getBooks();
+
+//check box
+const checkBoxFunction = () => {
+  imputedText.value = '';
+  // genreContainer.innerHTML = ''
+  if(checkBox.checked) {
+    bestRatingContainer.innerHTML = ''
+    mostReviewContainer.innerHTML = ''
+    // genreContainer.innerHTML = ''
+  
+    console.log("check-provera:", allBooksData)
+    generalFunction(allBooksData)
+  
+  } else {
+    bestRatingContainer.innerHTML = ''
+    mostReviewContainer.innerHTML = ''
+    // genreContainer.innerHTML = ''
+
+    console.log("notcheck-provera:", filteredBooks) 
+    generalFunction(filteredBooks)   
+  }
+}
+checkBox.addEventListener("click", checkBoxFunction)

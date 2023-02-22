@@ -1,3 +1,12 @@
+@charset "UTF-8";
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Početna vrijednost je 0 */
+  }
+  100% {
+    opacity: 1; /* Krajnja vrijednost je 1 */
+  }
+}
 * {
   margin: 0;
   padding: 0;
@@ -64,9 +73,6 @@ body {
   text-decoration: none;
   margin-right: 4rem;
 }
-.navigation-link:hover, .navigation-link:active {
-  color: #ea8426;
-}
 .navigation .check-wrapper {
   position: absolute;
   top: 0;
@@ -80,13 +86,33 @@ body {
   margin-right: 1rem;
   font-size: 1.8rem;
 }
-.navigation .check-wrapper .check-box-button {
-  display: block;
-  background-color: #ea8426;
+.navigation .check-wrapper input[type=checkbox] {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   width: 3rem;
   height: 3rem;
-  display: none;
+  border: 1px solid #4c4944;
+  margin: 0;
 }
+.navigation .check-wrapper input[type=checkbox] {
+  display: grid;
+  place-content: center;
+}
+.navigation .check-wrapper input[type=checkbox]::before {
+  content: "";
+  width: 2.4rem;
+  height: 2.4rem;
+  transform: scale(0);
+  transition: 0.05s transform ease-in-out;
+  box-shadow: inset 3rem 3rem #ea8426;
+  -webkit-clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+          clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.navigation .check-wrapper input[type=checkbox]:checked::before {
+  transform: scale(1);
+}
+
 .home-container {
   padding-bottom: 10rem;
   display: flex;
@@ -109,9 +135,12 @@ body {
   width: 23rem;
   background-color: #ffffff;
   cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  padding: 0.5rem;
+  animation: fadeIn ease-in-out 0.5s;
 }
 .item-img {
-  width: 23rem;
+  width: 22rem;
   aspect-ratio: 6/9;
 }
 .item-info-wrap {
@@ -126,7 +155,10 @@ body {
   text-align: center;
   font-size: 1.6rem;
   height: 4rem;
-  overflow: hidden;
+  overflow-y: scroll;
+}
+.item-heading::-webkit-scrollbar {
+  display: none;
 }
 .item-rating-reviews {
   display: flex;
@@ -154,6 +186,12 @@ body {
   margin-top: 5rem;
   margin-bottom: 4rem;
 }
+.categories-list-item-all {
+  list-style: none;
+  padding: 1rem 0;
+  cursor: pointer;
+  font-weight: 600;
+}
 .categories-list {
   list-style: none;
   height: 100vh;
@@ -161,10 +199,6 @@ body {
   width: 100%;
 }
 .categories-list-item {
-  padding: 1rem 0;
-  cursor: pointer;
-}
-.categories-list-item-all {
   padding: 1rem 0;
   cursor: pointer;
 }
@@ -186,34 +220,46 @@ body {
 
 .book-container {
   position: relative;
+  animation: fadeIn ease-in-out 0.2s;
 }
-.book-container .book-info-wrapper {
+.book-container .book-info-and-img {
   padding: 4rem 0;
   display: flex;
   gap: 5rem;
 }
-.book-container .book-info-wrapper .book-info {
-  width: 100%;
-}
-.book-container .book-info-wrapper .book-info-img {
+.book-container .book-info-and-img .book-img {
   width: 30rem;
   aspect-ratio: 6/9;
 }
-.book-container .book-info-wrapper .book-info-title {
+.book-container .book-info-and-img .book-info {
+  width: 100%;
+}
+.book-container .book-info-and-img .book-info-title {
   display: block;
   padding-top: 2rem;
   margin-bottom: 3rem;
   border-bottom: 1px solid #4c4944;
   font-size: 3.6rem;
 }
-.book-container .book-info-wrapper .book-info-item {
-  padding-bottom: 1.5rem;
+.book-container .book-info-and-img .book-info-wrapper {
+  display: flex;
+  gap: 3rem;
+}
+.book-container .book-info-and-img .book-info-item-1 {
+  padding: 1rem 0;
   text-transform: uppercase;
+  height: 5rem;
 }
-.book-container .book-info-wrapper .book-info-span {
+.book-container .book-info-and-img .book-info-item-2 {
   text-transform: capitalize;
+  padding: 1rem 0;
+  height: 5rem;
+  overflow-y: scroll;
 }
-.book-container .book-info-wrapper .book-info-span-rating {
+.book-container .book-info-and-img .book-info-item-2::-webkit-scrollbar {
+  display: none;
+}
+.book-container .book-info-and-img .book-info-item-2-rating {
   display: inline-block;
   text-align: center;
   background-color: #ea8426;
