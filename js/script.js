@@ -27,6 +27,7 @@ const red = "#b52121";
 const green = "#225e0c";
 const orangeNavigation = "#ea8426";
 
+let randomGenreBooks;
 let genreArr = [];
 let uniqueGenreArr = [];
 let allGenresList;
@@ -39,8 +40,119 @@ let allBooksData;
 let filteredBooks;
 let img;
 
+const excludedGenres = [
+  "Adult",
+  "Adult Fiction",
+  "African American Romance",
+  "Category Romance",
+  "Contemporary Romance",
+  "Crime",
+  "Erotic Horror",
+  "Erotic Romance",
+  "Erotica",
+  "Gay Erotica",
+  "Gay For You",
+  "Gay Romance",
+  "Horor",
+  "Lesbian Fiction",
+  "Lesbian Romance",
+  "M F M",
+  "M F Romance",
+  "M M Contemporary",
+  "M M F",
+  "M M Fantasy",
+  "M M Historical Romance",
+  "M M M",
+  "M M M M",
+  "M M Mystery",
+  "M M Paranormal",
+  "M M Romance",
+  "M M Science Fiction",
+  "M M Shapeshifters",
+  "M M Sports Romance",
+  "M M Supernatural",
+  "M M Young Adult",
+  "Manga Romance",
+  "Military Romance",
+  "New Adult",
+  "New Adult Romance",
+  "Romance",
+  "Sexuality",
+  "Sex Work",
+  "Strippers",
+  "Young Adult",
+  "Young Adult Contemporary",
+  "Young Adult Fantasy",
+  "Young Adult Historical Fiction",
+  "Young Adult Paranormal",
+  "Young Adult Romance",
+  "Young Adult Science Fiction",
+];
+
 /////////////////////////
 ///// Functions
+//navigation
+const navigationHendler = (activeBtn, pasiveBtn, activePage, pasivePage) => {
+  activeBtn.addEventListener("click", function () {
+    activePage.style.display = "flex";
+    pasivePage.style.display = "none";
+    clickedBookPage.style.display = "none";
+    activeBtn.style.color = orangeNavigation;
+    pasiveBtn.style.color = "initial";
+    imputedText.value = "";
+  });
+};
+
+//Get best rating books
+const bestRatingBooksArr = (array) => {
+  let bookDataSortRating = array.slice();
+  bookDataSortRating.sort(function (a, b) {
+    return b.rating - a.rating;
+  });
+  return bookDataSortRating.slice(0, 4);
+};
+
+//Get most revievs by gender
+const mostReviewBooksArr = (array) => {
+  // get random genre
+  let randomBook = array[Math.floor(Math.random() * array.length)];
+  let randomGenres = randomBook.genre.split(",");
+  let randomGenre =
+    randomGenres[Math.floor(Math.random() * randomGenres.length)];
+
+  //get array of books in random ganre
+  let booksInRandomGenre = array.filter((book) =>
+    book.genre.includes(randomGenre)
+  );
+  //sort books by rewiews and get 4 book with best review
+  booksInRandomGenre.sort(function (a, b) {
+    return b.reviews - a.reviews;
+  });
+  //set heading based on Genre
+  randomGendreHeading.textContent = randomGenre;
+  return booksInRandomGenre.slice(0, 4);
+};
+
+//Display all Genres on books page
+const getAndDisplayGenres = (array) => {
+  // get every genre for all books page
+  array.forEach((element) => {
+    let elementArr = element.genre.split(",");
+    genreArr = genreArr.concat(elementArr);
+  });
+
+  //display all genres and all books
+  uniqueGenreArr = [...new Set(genreArr)];
+  let spliceArr = uniqueGenreArr.sort();
+  spliceArr.splice(0, 1);
+
+  spliceArr.forEach((genre) => {
+    const html = `<li class="categories-list-item">${genre}</li>`;
+    genreContainer.insertAdjacentHTML("beforeend", html);
+  });
+};
+
+//Display Books
 const bestRatingText = (book) =>
   `<div class="item-rating">Rating: ${book.rating}</div>`;
 const mostReviewText = (book) =>
@@ -66,8 +178,9 @@ const displayBooks = (container, array, text, imgStyle) => {
   });
 };
 
-//Click on book //onclick ili hendleclick
-const clickedBookFunction = (array, booksContainer, page) => {
+//pokusavala sam ali ne mogu iz niza nego moram iz dom-a da vadim elemnte jer addEventListener ne radi na necemu sto nije DOM
+//Click on book
+const displayClickedBook = (array, booksContainer, page) => {
   clickBooks = booksContainer.querySelectorAll(".item");
 
   clickBooks.forEach((book, i) =>
@@ -76,13 +189,7 @@ const clickedBookFunction = (array, booksContainer, page) => {
       clickedBookPage.style.display = "block";
       page.style.display = "none";
 
-      console.log({ book });
-      //when no img in API
-      if (array[i].img.length > 0) {
-        img = array[i].img;
-      } else if (array[i].img === "") {
-        img = "book.png";
-      }
+      whenNoImgInApi(array[i]);
 
       const html = `<div class="book-info-and-img">
             <img src="${img}" class="book-img">
@@ -102,7 +209,7 @@ const clickedBookFunction = (array, booksContainer, page) => {
                         <p class="book-info-item-2">${array[i].pages}</p>
                         <p class="book-info-item-2 book-info-item-2-rating">${array[i].rating}</p>
                     </div>
-                </div>     
+                </div>
             </div>
         </div>
         <div class="book-description">
@@ -112,7 +219,6 @@ const clickedBookFunction = (array, booksContainer, page) => {
         <button class="back-button"> Back &larr; </button>`;
 
       clickedBookPage.insertAdjacentHTML("beforeend", html);
-      console.log(array);
 
       //Color element according to rating
       ratingElement = document.querySelector(".book-info-item-2-rating");
@@ -141,252 +247,144 @@ const whenNoImgInApi = (book) => {
   }
 };
 
+//get all rating and calculate average
+const calculateAverageRating = (array) => {
+  const ratings = array.map((book) => book.rating);
+  averageRating = (
+    ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+  ).toFixed(2);
+};
+
+//search functionality
+const searchHendler = (array) => {
+  searchButton.addEventListener("click", function () {
+    homePage.style.display = "none";
+    booksPage.style.display = "flex";
+
+    if (imputedText.value) {
+      const searchTerm = imputedText.value.toLowerCase();
+      const filterBooks = array.filter((book) => {
+        const bookTitle = book.title.toString().toLowerCase();
+        return bookTitle.includes(searchTerm);
+      });
+
+      if (filterBooks.length > 0) {
+        displayBooks(allBooksContainer, filterBooks, allBooksText, imgClass);
+        displayClickedBook(filterBooks, allBooksContainer, booksPage);
+      } else {
+        allBooksContainer.innerHTML = `<div class="wrong-input">
+        <p class="wrong-input-text"> You have entered a title that does not exist!</p>
+        <p class="wrong-input-text"> Try again!</p> </div>`;
+      }
+    } else {
+      allBooksContainer.innerHTML = `<div class="wrong-input">
+      <p class="wrong-input-text"> You have not entered any search text!</p>
+      <p class="wrong-input-text"> Please enter what you want to search!</p> </div>`;
+    }
+  });
+};
+
+//////////////////////////////
+//General function
+const generalHendler = (booksArray) => {
+  //// navigation funtionality
+  navigationHendler(homeNavigation, booksNavigation, homePage, booksPage);
+  navigationHendler(booksNavigation, homeNavigation, booksPage, homePage);
+
+  booksNavigation.addEventListener("click", function () {
+    displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
+    displayClickedBook(booksArray, allBooksContainer, booksPage);
+  });
+
+  //display best rating Books
+  displayBooks(
+    bestRatingContainer,
+    bestRatingBooksArr(booksArray),
+    bestRatingText
+  );
+
+  //display most review books
+  randomGenreBooks = mostReviewBooksArr(booksArray);
+  displayBooks(mostReviewContainer, randomGenreBooks, mostReviewText);
+
+  //display all genres and all books
+  getAndDisplayGenres(booksArray);
+  displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
+
+  //click on genre
+  const genres = genreContainer.querySelectorAll(".categories-list-item");
+  genres.forEach((genre) => {
+    genre.addEventListener("click", function () {
+      let booksClickedGenre = booksArray.filter((book) =>
+        book.genre.includes(genre.textContent)
+      );
+      displayBooks(
+        allBooksContainer,
+        booksClickedGenre,
+        allBooksText,
+        imgClass
+      );
+      displayClickedBook(booksClickedGenre, allBooksContainer, booksPage);
+      imputedText.value = "";
+    });
+  });
+  //Click on "all genre"
+  allGenresList = document.querySelector(".categories-list-item-all");
+  allGenresList.addEventListener("click", function () {
+    displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
+    displayClickedBook(booksArray, allBooksContainer, booksPage);
+  });
+
+  displayClickedBook(
+    bestRatingBooksArr(booksArray),
+    bestRatingContainer,
+    homePage
+  );
+  displayClickedBook(randomGenreBooks, mostReviewContainer, homePage);
+  displayClickedBook(booksArray, allBooksContainer, booksPage);
+
+  //search
+  searchHendler(booksArray);
+
+  //average rating
+  calculateAverageRating(booksArray);
+};
+
 ////////////////////////////////////
 //Default navigation color
 homeNavigation.style.color = orangeNavigation;
 
+/////////////////////////////////////
 ////Get Books
 const getBooks = async function (books) {
-  const response = await fetch(
-    "./data/data.json"
-    // 'https://api.jsonbin.io/v3/b/63a0e753dfc68e59d56c71ec/latest',
-    // {
-    //   method: 'GET',
-    //   headers: {
-    //     'X-Master-Key':
-    //       '$2b$10$viPOiL/.5Te1ctsEnmquLuBHKGeK09Vp0SxT2m7wkH68/e1537nUK',
-    //   },
-    // }
-  );
+  const response = await fetch("./data/data.json");
   const data = await response.json();
   let bookData = data.results;
 
-  //get array all books and array filtered books
-  allBooksData = data.results;
+  allBooksData = bookData;
 
-  //array genrs to exclude
-  const excludedGenres = [
-    "Adult",
-    "Adult Fiction",
-    "African American Romance",
-    "Category Romance",
-    "Contemporary Romance",
-    "Crime",
-    "Erotic Horror",
-    "Erotic Romance",
-    "Erotica",
-    "Gay Erotica",
-    "Gay For You",
-    "Gay Romance",
-    "Horor",
-    "Lesbian Fiction",
-    "Lesbian Romance",
-    "M F M",
-    "M F Romance",
-    "M M Contemporary",
-    "M M F",
-    "M M Fantasy",
-    "M M Historical Romance",
-    "M M M",
-    "M M M M",
-    "M M Mystery",
-    "M M Paranormal",
-    "M M Romance",
-    "M M Science Fiction",
-    "M M Shapeshifters",
-    "M M Sports Romance",
-    "M M Supernatural",
-    "M M Young Adult",
-    "Manga Romance",
-    "Military Romance",
-    "New Adult",
-    "New Adult Romance",
-    "Romance",
-    "Sexuality",
-    "Sex Work",
-    "Strippers",
-    "Young Adult",
-    "Young Adult Contemporary",
-    "Young Adult Fantasy",
-    "Young Adult Historical Fiction",
-    "Young Adult Paranormal",
-    "Young Adult Romance",
-    "Young Adult Science Fiction",
-  ];
   filteredBooks = bookData.filter(
     (book) => !excludedGenres.some((genre) => book.genre.includes(genre))
   );
 
   //display array depend on check box
-  const checkBoxFunction = () => {
+  const checkBoxHendler = () => {
     imputedText.value = "";
     genreContainer.innerHTML = "";
     genreArr = [];
     uniqueGenreArr = [];
 
     if (checkBox.checked) {
-      generalFunction(allBooksData);
+      generalHendler(allBooksData);
     } else {
-      generalFunction(filteredBooks);
+      generalHendler(filteredBooks);
     }
   };
+  checkBox.addEventListener("click", checkBoxHendler);
 
-  checkBox.addEventListener("click", checkBoxFunction);
-
-  //General function
-  const generalFunction = (booksArray) => {
-    //// navigation funtionality
-    homeNavigation.addEventListener("click", function () {
-      homePage.style.display = "flex";
-      booksPage.style.display = "none";
-      clickedBookPage.style.display = "none";
-      homeNavigation.style.color = orangeNavigation;
-      booksNavigation.style.color = "initial";
-
-      imputedText.value = "";
-    });
-
-    booksNavigation.addEventListener("click", function () {
-      homePage.style.display = "none";
-      booksPage.style.display = "flex";
-      clickedBookPage.style.display = "none";
-      booksNavigation.style.color = orangeNavigation;
-      homeNavigation.style.color = "initial";
-
-      imputedText.value = "";
-      displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
-      clickedBookFunction(booksArray, allBooksContainer, booksPage);
-    });
-
-    ////HOME PAGE
-    ////sort by rating
-    let bookDataSortRating = booksArray.slice();
-    bookDataSortRating.sort(function (a, b) {
-      return b.rating - a.rating;
-    });
-    let bestRatingBooks = bookDataSortRating.slice(0, 4);
-
-    displayBooks(bestRatingContainer, bestRatingBooks, bestRatingText);
-
-    ////sort most revievs by gender
-    // get random genre
-    let randomBook = booksArray[Math.floor(Math.random() * booksArray.length)];
-    let randomGenres = randomBook.genre.split(",");
-    let randomGenre =
-      randomGenres[Math.floor(Math.random() * randomGenres.length)];
-
-    //get array of books in random ganre
-    let booksInRandomGenre = booksArray.filter((book) =>
-      book.genre.includes(randomGenre)
-    );
-
-    //sort books by rewiews and get 4 book with best review
-    booksInRandomGenre.sort(function (a, b) {
-      return b.reviews - a.reviews;
-    });
-    let mostReviewBooks = booksInRandomGenre.slice(0, 4);
-
-    displayBooks(mostReviewContainer, mostReviewBooks, mostReviewText);
-
-    //set heading based on Genre
-    randomGendreHeading.textContent = randomGenre;
-
-    ////BOOK PAGE
-    // get every genre for all books page
-    booksArray.forEach((element) => {
-      let elementArr = element.genre.split(",");
-      genreArr = genreArr.concat(elementArr);
-    });
-    uniqueGenreArr = [...new Set(genreArr)];
-    // console.log(uniqueGenreArr)
-
-    //display all genres and all books
-    uniqueGenreArr = [...new Set(genreArr)];
-    let probaArr = uniqueGenreArr.sort();
-    probaArr.splice(0, 1);
-    //
-    // genreContainer.innerHTML = ''
-    console.log(probaArr);
-
-    probaArr.forEach((genre) => {
-      // genreContainer.innerHTML = ''
-      const html = `<li class="categories-list-item">${genre}</li>`;
-      genreContainer.insertAdjacentHTML("beforeend", html);
-    });
-
-    // getAndDisplayGenre(booksArray);
-    displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
-    // console.log(booksArray)
-
-    //click on genre
-    const genres = genreContainer.querySelectorAll(".categories-list-item");
-    genres.forEach((genre) => {
-      genre.addEventListener("click", function () {
-        let booksClickedGenre = booksArray.filter((book) =>
-          book.genre.includes(genre.textContent)
-        );
-
-        displayBooks(
-          allBooksContainer,
-          booksClickedGenre,
-          allBooksText,
-          imgClass
-        );
-        clickedBookFunction(booksClickedGenre, allBooksContainer, booksPage);
-        imputedText.value = "";
-      });
-    });
-
-    allGenresList = document.querySelector(".categories-list-item-all");
-    allGenresList.addEventListener("click", function () {
-      displayBooks(allBooksContainer, booksArray, allBooksText, imgClass);
-      clickedBookFunction(booksArray, allBooksContainer, booksPage);
-    });
-
-    clickedBookFunction(bestRatingBooks, bestRatingContainer, homePage);
-    clickedBookFunction(mostReviewBooks, mostReviewContainer, homePage);
-    clickedBookFunction(booksArray, allBooksContainer, booksPage);
-
-    ////search functionality
-    searchButton.addEventListener("click", function () {
-      homePage.style.display = "none";
-      booksPage.style.display = "flex";
-
-      if (imputedText.value) {
-        const searchTerm = imputedText.value.toLowerCase();
-        const filterBooks = booksArray.filter((book) => {
-          const bookTitle = book.title.toString().toLowerCase();
-          return bookTitle.includes(searchTerm);
-        });
-
-        if (filterBooks.length > 0) {
-          displayBooks(allBooksContainer, filterBooks, allBooksText, imgClass);
-          clickedBookFunction(filterBooks, allBooksContainer, booksPage);
-
-          // console.log(filterBooks)
-        } else {
-          allBooksContainer.innerHTML = `<div class="wrong-input">
-        <p class="wrong-input-text"> You have entered a title that does not exist!</p>
-        <p class="wrong-input-text"> Try again!</p> </div>`;
-          console.log("wrong title");
-          // console.log(filterBooks)
-        }
-      } else {
-        // console.log("no imputed value")
-        allBooksContainer.innerHTML = `<div class="wrong-input">
-      <p class="wrong-input-text"> You have not entered any search text!</p>
-      <p class="wrong-input-text"> Please enter what you want to search!</p> </div>`;
-      }
-    });
-    ////average rating
-    //get all rating and calculate average
-    const ratings = booksArray.map((book) => book.rating);
-    averageRating = (
-      ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
-    ).toFixed(2);
-  };
+  //default display filtered books
   if (!checkBox.checked) {
-    generalFunction(filteredBooks);
+    generalHendler(filteredBooks);
   }
 };
 
