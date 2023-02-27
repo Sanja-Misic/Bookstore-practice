@@ -1,10 +1,9 @@
-@charset "UTF-8";
 @keyframes fadeIn {
   0% {
-    opacity: 0; /* Početna vrijednost je 0 */
+    opacity: 0;
   }
   100% {
-    opacity: 1; /* Krajnja vrijednost je 1 */
+    opacity: 1;
   }
 }
 * {
@@ -72,6 +71,9 @@ body {
   color: #4c4944;
   text-decoration: none;
   margin-right: 4rem;
+}
+.navigation-link:hover, .navigation-link:active {
+  color: #ea8426;
 }
 .navigation .check-wrapper {
   position: absolute;

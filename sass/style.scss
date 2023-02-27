@@ -7,19 +7,15 @@ $color-text: #4c4944;
 $color-text-white: #ffffff;
 $color-book-cards: #ffffff;
 
-$red: #b52121;
-$red: #225e0c;
-
 //Animations
 @keyframes fadeIn {
   0% {
-    opacity: 0; /* Početna vrijednost je 0 */
+    opacity: 0;
   }
   100% {
-    opacity: 1; /* Krajnja vrijednost je 1 */
+    opacity: 1;
   }
 }
-
 
 * {
   margin: 0;
@@ -53,9 +49,6 @@ body {
     justify-content: space-between;
   }
 
-  &-logo {
-  }
-
   &-search {
     align-self: center;
     display: flex;
@@ -87,10 +80,9 @@ body {
   background-color: $color-navigation;
   padding: 2rem;
   font-size: 2.4rem;
-  
-  &-wrapper{
-    position: relative;
 
+  &-wrapper {
+    position: relative;
   }
 
   &-link {
@@ -103,30 +95,24 @@ body {
 
     &:hover,
     &:active {
-      // color: $color-orange-detail;
+      color: $color-orange-detail;
     }
   }
 
   //checkbox
-  .check-wrapper{
+  .check-wrapper {
     position: absolute;
     top: 0;
     right: 0;
     display: flex;
 
-
-    .check-text{
-      
+    .check-text {
       display: flex;
       align-items: center;
       gap: 2rem;
-     
+
       margin-right: 1rem;
       font-size: 1.8rem;
-    }
-
-    .check-box{
-      
     }
 
     input[type="checkbox"] {
@@ -135,28 +121,28 @@ body {
       height: 3rem;
       border: 1px solid $color-text;
       margin: 0;
-  }
+    }
 
     input[type="checkbox"] {
       display: grid;
       place-content: center;
-  }
+    }
 
-  input[type="checkbox"]::before {
-    content: "";
-    width: 2.4rem;
-    height: 2.4rem;
-    transform: scale(0);
-    transition: 0.05s transform ease-in-out;
-    box-shadow: inset 3rem 3rem $color-orange-detail;
-  
-    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    input[type="checkbox"]::before {
+      content: "";
+      width: 2.4rem;
+      height: 2.4rem;
+      transform: scale(0);
+      transition: 0.05s transform ease-in-out;
+      box-shadow: inset 3rem 3rem $color-orange-detail;
+
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    input[type="checkbox"]:checked::before {
+      transform: scale(1);
+    }
   }
-  
-  input[type="checkbox"]:checked::before {
-    transform: scale(1);
-  }
-}
 }
 
 ////HOME
@@ -189,7 +175,7 @@ body {
     aspect-ratio: 6 / 9;
   }
 
-  &-info-wrap{
+  &-info-wrap {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -203,9 +189,9 @@ body {
     height: 4rem;
     overflow-y: scroll;
 
-      &::-webkit-scrollbar {
-        display: none;
-      }
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &-rating-reviews {
@@ -227,8 +213,6 @@ body {
     padding-top: 1rem;
     padding-left: 1rem;
   }
-
-
 }
 
 ////BOOKS
@@ -258,7 +242,6 @@ body {
       padding: 1rem 0;
       cursor: pointer;
     }
-
   }
 }
 
@@ -274,105 +257,100 @@ body {
   .all-books-item {
     width: 17.1rem;
   }
-
-  .all-books-img {
-    width: 17.1rem;
-  }
 }
-
 
 //Book
 .book-container {
   position: relative;
   animation: fadeIn ease-in-out 0.2s;
-  
+
   .book-info-and-img {
-  padding: 4rem 0;
-  display: flex;
-  gap: 5rem;
+    padding: 4rem 0;
+    display: flex;
+    gap: 5rem;
 
-  .book-img {
-    width: 30rem;
-    aspect-ratio: 6 / 9;
+    .book-img {
+      width: 30rem;
+      aspect-ratio: 6 / 9;
+    }
+
+    .book-info {
+      width: 100%;
+      &-title {
+        display: block;
+        padding-top: 2rem;
+        margin-bottom: 3rem;
+        border-bottom: 1px solid $color-text;
+        font-size: 3.6rem;
+      }
+
+      &-wrapper {
+        display: flex;
+        gap: 3rem;
+      }
+
+      &-item-1 {
+        padding: 1rem 0;
+        text-transform: uppercase;
+        height: 5rem;
+      }
+
+      &-item-2 {
+        text-transform: capitalize;
+        padding: 1rem 0;
+        height: 5rem;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        &-rating {
+          display: inline-block;
+          text-align: center;
+          background-color: $color-orange-detail;
+          color: $color-text-white;
+          padding: 1rem 2rem;
+          width: 8.6rem;
+        }
+      }
+    }
   }
 
-  .book-info {
-    width: 100%;
-    &-title {
-      display: block;
-      padding-top: 2rem;
-      margin-bottom: 3rem;
+  .book-description {
+    &-heading {
+      margin-bottom: 2.4rem;
+      font-size: 2.6rem;
       border-bottom: 1px solid $color-text;
-      font-size: 3.6rem;
+      font-weight: 600;
     }
 
-    &-wrapper{
-      display: flex;
-      gap: 3rem;
-    }
-    
-    &-item-1 {
-      padding: 1rem 0;
-      text-transform: uppercase;
-      height: 5rem;    
-    }
-
-    &-item-2 {
-      text-transform: capitalize;
-      padding: 1rem 0;
-      height: 5rem;
-      overflow-y: scroll;
-      
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      &-rating{
-        display: inline-block;
-        text-align: center;
-        background-color: $color-orange-detail;
-        color: $color-text-white;
-        padding: 1rem 2rem;
-        width: 8.6rem;       
-      }
+    &-text {
+      margin-bottom: 4rem;
+      line-height: 1.5;
     }
   }
-}
 
-.book-description {
-  &-heading {
-    margin-bottom: 2.4rem;
-    font-size: 2.6rem;
-    border-bottom: 1px solid $color-text;
-    font-weight: 600;
-  }
-  
-  &-text {
-    margin-bottom: 4rem;
-    line-height: 1.5;
-  }
-}
+  .back-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 2rem;
+    background-color: $color-text;
+    color: $color-text-white;
+    cursor: pointer;
 
-.back-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 2rem;
-  background-color: $color-text;
-  color: $color-text-white;
-  cursor: pointer;
-
-  :hover{
-    background-color: $color-header-footer;
+    :hover {
+      background-color: $color-header-footer;
+    }
   }
-}
 }
 
 .wrong-input {
-  &-text{
+  &-text {
     font-size: 3rem;
-    padding-bottom: 2rem ;  
+    padding-bottom: 2rem;
   }
 }
 
